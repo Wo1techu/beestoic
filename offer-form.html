@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beeStoic - Dodawanie Ofert</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">beeStoic</div>
+            <ul>
+                <li><a href="index.html">Strona główna</a></li>
+                <li><a href="app.html">Panel główny</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="container">
+        <h1>Dodawanie Ofert</h1>
+        
+        <form id="offerForm">
+            <div id="dynamicFields">
+                <!-- Pola formularza będą generowane dynamicznie -->
+            </div>
+            <button type="submit">Dodaj ofertę</button>
+        </form>
+
+        <div id="offerList">
+            <h2>Lista dodanych ofert</h2>
+            <table id="offerTable">
+                <thead>
+                    <!-- Nagłówki tabeli będą generowane dynamicznie -->
+                </thead>
+                <tbody>
+                    <!-- Oferty będą dodawane tutaj -->
+                </tbody>
+            </table>
+        </div>
+
+        <button id="generateReportBtn">Generuj raport</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script src="offer.js"></script>
+</body>
+</html>

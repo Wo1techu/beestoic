@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beeStoic - Kreator Zestawienia Ofert</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">beeStoic</div>
+            <ul>
+                <li><a href="index.html">Strona główna</a></li>
+                <li><a href="app.html">Panel główny</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="container">
+        <h1>Kreator Zestawienia Ofert</h1>
+        
+        <form id="offerFieldsForm">
+            <h2>Wybierz pola do uwzględnienia w zestawieniu:</h2>
+            <div id="fieldCheckboxes">
+                <!-- Checkboxy będą generowane dynamicznie przez JavaScript -->
+            </div>
+            <button type="submit" id="nextStepBtn">Przejdź dalej</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script src="offers.js"></script>
+</body>
+</html>
