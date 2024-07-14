@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>beeStoic - Tworzenie Zestawienia Ofertowego</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>beeStoic - Dodawanie Ofert</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="offer-summary.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -22,29 +21,40 @@
     </header>
     
     <main class="container">
-        <h1>Tworzenie Zestawienia Ofertowego</h1>
+        <h1>Dodawanie Ofert</h1>
+        <h2>Zestawienie dla firmy: <span id="nazwaFirmyDisplay"></span></h2>
         
         <form id="offerForm">
-            <div id="dynamicFields"></div>
-            <button type="submit" class="btn btn-primary">Dodaj ofertę</button>
+            <div id="dynamicFields">
+                <!-- Pola formularza będą generowane dynamicznie -->
+            </div>
+            <button type="submit">Dodaj ofertę</button>
         </form>
 
-        <div id="offerSummary">
-            <h2>Zestawienie ofert</h2>
+        <div id="offerControls">
+            <input type="text" id="searchInput" placeholder="Wyszukaj oferty...">
+            <select id="sortSelect">
+                <option value="">Sortuj według...</option>
+                <!-- Opcje sortowania będą dodane dynamicznie -->
+            </select>
+            <button id="generatePdfBtn">Generuj PDF</button>
+            <button id="generateExcelBtn">Generuj Excel</button>
+        </div>
+
+        <div id="offerList">
+            <h2>Lista dodanych ofert</h2>
             <table id="offerTable">
-                <thead></thead>
-                <tbody></tbody>
+                <thead>
+                    <!-- Nagłówki tabeli będą generowane dynamicznie -->
+                </thead>
+                <tbody>
+                    <!-- Oferty będą dodawane tutaj -->
+                </tbody>
             </table>
         </div>
 
-        <div id="chartContainer">
-            <canvas id="offerChart"></canvas>
-        </div>
-
-        <div id="actionButtons">
-            <button id="generatePdfBtn" class="btn btn-secondary">Generuj PDF</button>
-            <button id="generateExcelBtn" class="btn btn-secondary">Generuj Excel</button>
-            <button id="generateRecommendationBtn" class="btn btn-secondary">Generuj rekomendację</button>
+        <div id="recommendation">
+            <!-- Rekomendacja będzie wyświetlana tutaj -->
         </div>
     </main>
 

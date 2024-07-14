@@ -1,190 +1,275 @@
+// Globalne zmienne
+let offers = [];
+let selectedFields = [];
+let nazwaFirmy = '';
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementy DOM
-    const dynamicFields = document.getElementById('dynamicFields');
-    const offerForm = document.getElementById('offerForm');
-    const offerTable = document.getElementById('offerTable');
-    const generatePdfBtn = document.getElementById('generatePdfBtn');
-    const generateExcelBtn = document.getElementById('generateExcelBtn');
-    const generateRecommendationBtn = document.getElementById('generateRecommendationBtn');
-    const searchInput = document.getElementById('searchInput');
-    const sortSelect = document.getElementById('sortSelect');
-
-    // Zmienne globalne
-    let selectedFields = JSON.parse(localStorage.getItem('selectedFields')) || [];
-    let offers = [];
-
-    // Inicjalizacja
-    initializeForm();
+    // Pobierz wybrane pola i nazwę firmy z localStorage
+    selectedFields = JSON.parse(localStorage.getItem('selectedFields') || '[]');
+    nazwaFirmy = localStorage.getItem('nazwaFirmy') || '';
+    
+    // Inicjalizacja formularza i tabeli
+    createDynamicForm();
     initializeTable();
-    initializeSortOptions();
+    
+    // Dodaj obsługę zdarzeń
+    document.getElementById('offerForm').addEventListener('submit', handleFormSubmit);
+    document.getElementById('generatePdfBtn').addEventListener('click', generatePDF);
+    document.getElementById('generateExcelBtn').addEventListener('click', generateExcel);
+    document.getElementById('searchInput').addEventListener('input', filterOffers);
+    document.getElementById('sortSelect').addEventListener('change', sortOffers);
 
-    // Event Listeners
-    offerForm.addEventListener('submit', handleFormSubmit);
-    generatePdfBtn.addEventListener('click', generatePDF);
-    generateExcelBtn.addEventListener('click', generateExcel);
-    generateRecommendationBtn.addEventListener('click', generateRecommendation);
-    searchInput.addEventListener('input', filterOffers);
-    sortSelect.addEventListener('change', sortOffers);
+    // Wyświetl nazwę firmy
+    document.getElementById('nazwaFirmyDisplay').textContent = nazwaFirmy;
 
-    function initializeForm() {
-        dynamicFields.innerHTML = '';
-        selectedFields.forEach(field => {
-            const fieldDiv = document.createElement('div');
-            fieldDiv.className = 'form-group';
+    // Dodaj opcje sortowania
+    populateSortOptions();
+});
+
+function createDynamicForm() {
+    const dynamicFields = document.getElementById('dynamicFields');
+    selectedFields.forEach(field => {
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'form-group';
+        if (field === 'rekomendacja') {
             fieldDiv.innerHTML = `
                 <label for="${field}">${getFieldLabel(field)}</label>
-                <input type="${getFieldType(field)}" id="${field}" name="${field}" required>
+                <input type="range" id="${field}" name="${field}" min="1" max="10" value="5" required>
+                <output for="${field}">5 ${getStarRating(5)}</output>
             `;
-            dynamicFields.appendChild(fieldDiv);
-        });
-    }
-
-    function initializeTable() {
-        const thead = offerTable.querySelector('thead');
-        let headerRow = '<tr>';
-        selectedFields.forEach(field => {
-            headerRow += `<th>${getFieldLabel(field)}</th>`;
-        });
-        headerRow += '<th>Akcje</th></tr>';
-        thead.innerHTML = headerRow;
-    }
-
-    function initializeSortOptions() {
-        sortSelect.innerHTML = '<option value="">Wybierz pole do sortowania</option>';
-        selectedFields.forEach(field => {
-            const option = document.createElement('option');
-            option.value = field;
-            option.textContent = getFieldLabel(field);
-            sortSelect.appendChild(option);
-        });
-    }
-
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        const formData = new FormData(offerForm);
-        const offerData = Object.fromEntries(formData.entries());
-        offers.push(offerData);
-        updateOfferTable();
-        offerForm.reset();
-    }
-
-    function updateOfferTable() {
-        const tbody = offerTable.querySelector('tbody');
-        tbody.innerHTML = '';
-        offers.forEach((offer, index) => {
-            let row = '<tr>';
-            selectedFields.forEach(field => {
-                row += `<td>${offer[field]}</td>`;
+            const input = fieldDiv.querySelector('input');
+            const output = fieldDiv.querySelector('output');
+            input.addEventListener('input', function() {
+                output.textContent = `${this.value} ${getStarRating(parseInt(this.value))}`;
             });
-            row += `<td>
-                <button onclick="editOffer(${index})" class="btn btn-small btn-secondary">Edytuj</button>
-                <button onclick="deleteOffer(${index})" class="btn btn-small btn-danger">Usuń</button>
-            </td></tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.text('Zestawienie ofertowe', 14, 15);
-        doc.autoTable({
-            head: [selectedFields.map(getFieldLabel)],
-            body: offers.map(offer => selectedFields.map(field => offer[field])),
-            startY: 20
-        });
-
-        doc.save('zestawienie_ofertowe.pdf');
-    }
-
-    function generateExcel() {
-        const worksheet = XLSX.utils.json_to_sheet(offers);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Zestawienie ofertowe");
-        XLSX.writeFile(workbook, "zestawienie_ofertowe.xlsx");
-    }
-
-    function generateRecommendation() {
-        if (offers.length === 0) {
-            alert('Brak ofert do analizy.');
-            return;
+        } else {
+            fieldDiv.innerHTML = `
+                <label for="${field}">${getFieldLabel(field)}</label>
+                <input type="${getInputType(field)}" id="${field}" name="${field}" required>
+            `;
         }
+        dynamicFields.appendChild(fieldDiv);
+    });
+}
 
-        const bestOffer = offers.reduce((prev, current) => 
-            (parseFloat(prev.kwotaBrutto) < parseFloat(current.kwotaBrutto)) ? prev : current
-        );
+function getFieldLabel(fieldId) {
+    const fieldLabels = {
+        nazwaFirmy: 'Nazwa firmy',
+        usluga: 'Usługa',
+        kwotaBrutto: 'Kwota brutto',
+        rekomendacja: 'Rekomendacja (1-10)',
+        iloscGodzinRBH: 'Ilość godzin w RBH',
+        iloscDni: 'Ilość dni',
+        vat: 'VAT',
+        kwotaNetto: 'Kwota netto',
+        uwagi: 'Uwagi',
+        iloscOsob: 'Ilość osób',
+        ilosc: 'Ilość',
+        cenaJednostkowa: 'Cena jednostkowa',
+        linkDoOferty: 'Link do oferty',
+        linkDoStrony: 'Link do strony',
+        ocenaMerytoryczna: 'Ocena merytoryczna'
+    };
+    return fieldLabels[fieldId] || fieldId;
+}
 
-        alert(`Rekomendowana oferta:\nNazwa firmy: ${bestOffer.nazwaWspolnoty}\nKwota brutto: ${bestOffer.kwotaBrutto} zł`);
-    }
+function getInputType(fieldId) {
+    const numericFields = ['kwotaBrutto', 'kwotaNetto', 'iloscGodzinRBH', 'iloscDni', 'vat', 'iloscOsob', 'ilosc', 'cenaJednostkowa'];
+    return numericFields.includes(fieldId) ? 'number' : 'text';
+}
 
-    function filterOffers() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filteredOffers = offers.filter(offer => 
-            Object.values(offer).some(value => 
-                value.toString().toLowerCase().includes(searchTerm)
-            )
-        );
-        updateOfferTable(filteredOffers);
-    }
+function getStarRating(rating) {
+    const fullStar = '★';
+    const emptyStar = '☆';
+    const fullStars = fullStar.repeat(rating);
+    const emptyStars = emptyStar.repeat(10 - rating);
+    return fullStars + emptyStars;
+}
 
-    function sortOffers() {
-        const sortField = sortSelect.value;
-        if (sortField) {
-            offers.sort((a, b) => {
-                if (a[sortField] < b[sortField]) return -1;
-                if (a[sortField] > b[sortField]) return 1;
-                return 0;
-            });
-            updateOfferTable();
-        }
-    }
+function initializeTable() {
+    const table = document.getElementById('offerTable');
+    const thead = table.createTHead();
+    const row = thead.insertRow();
+    selectedFields.forEach(field => {
+        const th = document.createElement('th');
+        th.textContent = getFieldLabel(field);
+        row.appendChild(th);
+    });
+    const actionsHeader = document.createElement('th');
+    actionsHeader.textContent = 'Akcje';
+    row.appendChild(actionsHeader);
+}
 
-    function getFieldLabel(fieldId) {
-        const fieldLabels = {
-            nazwaWspolnoty: 'Nazwa wspólnoty',
-            usluga: 'Usługa',
-            iloscGodzinRBH: 'Ilość godzin w RBH',
-            iloscDni: 'Ilość dni',
-            vat: 'VAT',
-            kwotaNetto: 'Kwota netto',
-            kwotaBrutto: 'Kwota brutto',
-            uwagi: 'Uwagi',
-            iloscOsob: 'Ilość osób',
-            rekomendacja: 'Rekomendacja',
-            ilosc: 'Ilość',
-            cenaJednostkowa: 'Cena jednostkowa',
-            linkDoOferty: 'Link do oferty',
-            linkDoStrony: 'Link do strony',
-            rekomendacja1_10: 'Rekomendacja 1-10',
-            ocenaMerytoryczna: 'Ocena merytoryczna'
-        };
-        return fieldLabels[fieldId] || fieldId;
-    }
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const offer = {};
+    selectedFields.forEach(field => {
+        offer[field] = formData.get(field);
+    });
+    offers.push(offer);
+    updateTable();
+    e.target.reset();
+    updateRecommendation();
+}
 
-    function getFieldType(fieldId) {
-        const numberFields = ['iloscGodzinRBH', 'iloscDni', 'vat', 'kwotaNetto', 'kwotaBrutto', 'iloscOsob', 'ilosc', 'cenaJednostkowa', 'rekomendacja1_10', 'ocenaMerytoryczna'];
-        const urlFields = ['linkDoOferty', 'linkDoStrony'];
-
-        if (numberFields.includes(fieldId)) return 'number';
-        if (urlFields.includes(fieldId)) return 'url';
-        return 'text';
-    }
-
-    // Funkcje globalne dla edycji i usuwania ofert
-    window.editOffer = function(index) {
-        const offer = offers[index];
+function updateTable() {
+    const tableBody = document.getElementById('offerTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+    offers.forEach((offer, index) => {
+        const row = tableBody.insertRow();
         selectedFields.forEach(field => {
-            document.getElementById(field).value = offer[field];
+            const cell = row.insertCell();
+            if (field === 'rekomendacja') {
+                cell.textContent = `${offer[field]} ${getStarRating(parseInt(offer[field]))}`;
+            } else {
+                cell.textContent = offer[field];
+            }
         });
-        offers.splice(index, 1);
-        updateOfferTable();
-    };
+        const actionsCell = row.insertCell();
+        actionsCell.innerHTML = `
+            <button class="btn btn-small btn-secondary" onclick="editOffer(${index})">Edytuj</button>
+            <button class="btn btn-small btn-danger" onclick="deleteOffer(${index})">Usuń</button>
+        `;
+    });
+}
 
-    window.deleteOffer = function(index) {
-        if (confirm('Czy na pewno chcesz usunąć tę ofertę?')) {
-            offers.splice(index, 1);
-            updateOfferTable();
+function editOffer(index) {
+    const offer = offers[index];
+    selectedFields.forEach(field => {
+        const input = document.getElementById(field);
+        input.value = offer[field];
+        if (field === 'rekomendacja') {
+            input.nextElementSibling.textContent = `${offer[field]} ${getStarRating(parseInt(offer[field]))}`;
         }
-    };
-});
+    });
+    offers.splice(index, 1);
+    updateTable();
+    updateRecommendation();
+}
+
+function deleteOffer(index) {
+    offers.splice(index, 1);
+    updateTable();
+    updateRecommendation();
+}
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setLanguage("pl");
+    doc.setFont("helvetica", "bold");
+    doc.text(`Zestawienie ofert dla ${nazwaFirmy}`, 10, 10);
+    doc.setFont("helvetica", "normal");
+    
+    const tableData = offers.map(offer => 
+        selectedFields.map(field => 
+            field === 'rekomendacja' ? `${offer[field]} ${getStarRating(parseInt(offer[field]))}` : offer[field]
+        )
+    );
+    
+    doc.autoTable({
+        head: [selectedFields.map(getFieldLabel)],
+        body: tableData,
+        startY: 20,
+        styles: { font: "helvetica", language: "pl" }
+    });
+    
+    doc.save(`zestawienie_ofert_${nazwaFirmy}.pdf`);
+}
+
+function generateExcel() {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(offers.map(offer => {
+        const newOffer = {...offer};
+        if (newOffer.rekomendacja) {
+            newOffer.rekomendacja = `${newOffer.rekomendacja} ${getStarRating(parseInt(newOffer.rekomendacja))}`;
+        }
+        return newOffer;
+    }));
+    
+    // Dodaj nazwę firmy jako pierwszą komórkę
+    XLSX.utils.sheet_add_aoa(worksheet, [[`Zestawienie ofert dla ${nazwaFirmy}`]], { origin: "A1" });
+    
+    // Dostosuj szerokość kolumn
+    const cols = Object.keys(offers[0] || {}).map(() => ({ wch: 20 }));
+    worksheet['!cols'] = cols;
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Zestawienie ofert');
+    XLSX.writeFile(workbook, `zestawienie_ofert_${nazwaFirmy}.xlsx`);
+}
+
+function filterOffers() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredOffers = offers.filter(offer => 
+        Object.values(offer).some(value => 
+            value.toString().toLowerCase().includes(searchTerm)
+        )
+    );
+    updateTableWithData(filteredOffers);
+}
+
+function sortOffers() {
+    const sortField = document.getElementById('sortSelect').value;
+    if (!sortField) return;
+    
+    const sortedOffers = [...offers].sort((a, b) => {
+        if (getInputType(sortField) === 'number') {
+            return parseFloat(a[sortField]) - parseFloat(b[sortField]);
+        }
+        return a[sortField].localeCompare(b[sortField]);
+    });
+    updateTableWithData(sortedOffers);
+}
+
+function updateTableWithData(data) {
+    const tableBody = document.getElementById('offerTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+    data.forEach((offer, index) => {
+        const row = tableBody.insertRow();
+        selectedFields.forEach(field => {
+            const cell = row.insertCell();
+            if (field === 'rekomendacja') {
+                cell.textContent = `${offer[field]} ${getStarRating(parseInt(offer[field]))}`;
+            } else {
+                cell.textContent = offer[field];
+            }
+        });
+        const actionsCell = row.insertCell();
+        actionsCell.innerHTML = `
+            <button class="btn btn-small btn-secondary" onclick="editOffer(${index})">Edytuj</button>
+            <button class="btn btn-small btn-danger" onclick="deleteOffer(${index})">Usuń</button>
+        `;
+    });
+}
+
+function updateRecommendation() {
+    const recommendationDiv = document.getElementById('recommendation');
+    if (offers.length === 0) {
+        recommendationDiv.textContent = "Brak ofert do porównania";
+        return;
+    }
+    
+    const bestOffer = offers.reduce((best, current) => {
+        const currentScore = parseFloat(current.kwotaBrutto) * (11 - parseInt(current.rekomendacja));
+        const bestScore = parseFloat(best.kwotaBrutto) * (11 - parseInt(best.rekomendacja));
+        return currentScore < bestScore ? current : best;
+    });
+    
+    recommendationDiv.innerHTML = `
+        Rekomendowana oferta: ${bestOffer.nazwaFirmy}<br>
+        Kwota: ${bestOffer.kwotaBrutto} PLN brutto<br>
+        Rekomendacja: ${bestOffer.rekomendacja} ${getStarRating(parseInt(bestOffer.rekomendacja))}
+    `;
+}
+
+function populateSortOptions() {
+    const sortSelect = document.getElementById('sortSelect');
+    selectedFields.forEach(field => {
+        const option = document.createElement('option');
+        option.value = field;
+        option.textContent = getFieldLabel(field);
+        sortSelect.appendChild(option);
+    });
+}

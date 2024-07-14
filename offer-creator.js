@@ -1,37 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
     const fieldCheckboxes = document.getElementById('fieldCheckboxes');
     const offerFieldsForm = document.getElementById('offerFieldsForm');
+    const nazwaWspolnotyInput = document.getElementById('nazwaWspolnotyInput');
     
     // Lista dostępnych pól
     const availableFields = [
-        { id: 'nazwaWspolnoty', label: 'Nazwa wspólnoty' },
-        { id: 'usluga', label: 'Usługa' },
+        { id: 'nazwaWspolnoty', label: 'Nazwa Wspólnoty Mieszkaniowej', required: true },
+        { id: 'usluga', label: 'Usługa', required: true },
+        { id: 'kwotaBrutto', label: 'Kwota brutto', required: true },
+        { id: 'rekomendacja', label: 'Rekomendacja (1-10)', required: true },
         { id: 'iloscGodzinRBH', label: 'Ilość godzin w RBH' },
         { id: 'iloscDni', label: 'Ilość dni' },
         { id: 'vat', label: 'VAT' },
         { id: 'kwotaNetto', label: 'Kwota netto' },
-        { id: 'kwotaBrutto', label: 'Kwota brutto' },
         { id: 'uwagi', label: 'Uwagi' },
         { id: 'iloscOsob', label: 'Ilość osób' },
-        { id: 'rekomendacja', label: 'Rekomendacja' },
         { id: 'ilosc', label: 'Ilość' },
         { id: 'cenaJednostkowa', label: 'Cena jednostkowa' },
         { id: 'linkDoOferty', label: 'Link do oferty' },
         { id: 'linkDoStrony', label: 'Link do strony' },
-        { id: 'rekomendacja1_10', label: 'Rekomendacja 1-10' },
         { id: 'ocenaMerytoryczna', label: 'Ocena merytoryczna' }
     ];
 
     // Generowanie checkboxów
     availableFields.forEach(field => {
-        const checkboxWrapper = document.createElement('label');
-        checkboxWrapper.className = 'checkbox-wrapper';
+        const checkboxWrapper = document.createElement('div');
+        checkboxWrapper.className = `checkbox-wrapper ${field.required ? 'required' : ''}`;
         checkboxWrapper.innerHTML = `
-            ${field.label}
-            <input type="checkbox" id="${field.id}" name="fields" value="${field.id}">
-            <span class="checkmark"></span>
+            <input type="checkbox" id="${field.id}" name="fields" value="${field.id}" 
+                   ${field.required ? 'checked disabled' : ''}>
+            <label for="${field.id}">${field.label}</label>
         `;
         fieldCheckboxes.appendChild(checkboxWrapper);
+
+        // Dodaj interaktywność
+        const checkbox = checkboxWrapper.querySelector('input[type="checkbox"]');
+        checkbox.addEventListener('change', function() {
+            checkboxWrapper.classList.toggle('checked', this.checked);
+        });
+
+        // Ustaw początkowy stan dla wymaganych pól
+        if (field.required) {
+            checkboxWrapper.classList.add('checked');
+        }
     });
 
     // Obsługa formularza
@@ -45,8 +56,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Zapisz wybrane pola i przejdź do tworzenia zestawienia
+        const nazwaWspolnoty = nazwaWspolnotyInput.value.trim();
+        if (!nazwaWspolnoty) {
+            alert('Podaj nazwę Wspólnoty Mieszkaniowej.');
+            return;
+        }
+
+        // Zapisz wybrane pola i nazwę wspólnoty, i przejdź do następnego kroku
         localStorage.setItem('selectedFields', JSON.stringify(selectedFields));
-        window.location.href = 'offer-summary.html';
+        localStorage.setItem('nazwaWspolnoty', nazwaWspolnoty);
+        window.location.href = 'offer-form.html';
     });
 });
