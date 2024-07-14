@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>beeStoic - Kreator Zestawienia Ofert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="offer-creator.css">
 </head>
 <body>
     <header>
@@ -22,10 +24,10 @@
         
         <form id="offerFieldsForm">
             <h2>Wybierz pola do uwzględnienia w zestawieniu:</h2>
-            <div id="fieldCheckboxes">
+            <div id="fieldCheckboxes" class="checkbox-grid">
                 <!-- Checkboxy będą generowane dynamicznie przez JavaScript -->
             </div>
-            <button type="submit" id="nextStepBtn">Przejdź dalej</button>
+            <button type="submit" id="nextStepBtn" class="btn btn-primary">Przejdź do tworzenia zestawienia</button>
         </form>
     </main>
 
@@ -33,6 +35,6 @@
         <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
     </footer>
 
-    <script src="offers.js"></script>
+    <script src="offer-creator.js"></script>
 </body>
 </html>
