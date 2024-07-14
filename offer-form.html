@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>beeStoic - Dodawanie Ofert</title>
+    <title>beeStoic - Zestawienie Ofert</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -12,20 +16,31 @@
             <div class="logo">beeStoic</div>
             <ul>
                 <li><a href="index.html">Strona główna</a></li>
-                <li><a href="app.html">Panel główny</a></li>
+                <li><a href="offer-creator.html">Nowe zestawienie</a></li>
             </ul>
         </nav>
     </header>
     
     <main class="container">
-        <h1>Dodawanie Ofert</h1>
+        <h1>Zestawienie Ofert</h1>
+        <h2>Wspólnota Mieszkaniowa: <span id="nazwaWspolnotyDisplay"></span></h2>
         
         <form id="offerForm">
             <div id="dynamicFields">
                 <!-- Pola formularza będą generowane dynamicznie -->
             </div>
-            <button type="submit">Dodaj ofertę</button>
+            <button type="submit" class="btn">Dodaj ofertę</button>
         </form>
+
+        <div id="offerControls">
+            <input type="text" id="searchInput" placeholder="Wyszukaj oferty...">
+            <select id="sortSelect">
+                <option value="">Sortuj według...</option>
+                <!-- Opcje sortowania będą dodane dynamicznie -->
+            </select>
+            <button id="generatePdfBtn" class="btn">Generuj PDF</button>
+            <button id="generateExcelBtn" class="btn">Generuj Excel</button>
+        </div>
 
         <div id="offerList">
             <h2>Lista dodanych ofert</h2>
@@ -39,13 +54,19 @@
             </table>
         </div>
 
-        <button id="generateReportBtn">Generuj raport</button>
+        <div id="chartContainer">
+            <canvas id="offerChart"></canvas>
+        </div>
+
+        <div id="recommendation">
+            <!-- Rekomendacja będzie wyświetlana tutaj -->
+        </div>
     </main>
 
     <footer>
         <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
     </footer>
 
-    <script src="offer.js"></script>
+    <script src="offer-summary.js"></script>
 </body>
 </html>
