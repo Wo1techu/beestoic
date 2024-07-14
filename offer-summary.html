@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beeStoic - Tworzenie Zestawienia Ofertowego</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="offer-summary.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">beeStoic</div>
+            <ul>
+                <li><a href="index.html">Strona główna</a></li>
+                <li><a href="app.html">Panel główny</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main class="container">
+        <h1>Tworzenie Zestawienia Ofertowego</h1>
+        
+        <form id="offerForm">
+            <div id="dynamicFields"></div>
+            <button type="submit" class="btn btn-primary">Dodaj ofertę</button>
+        </form>
+
+        <div id="offerSummary">
+            <h2>Zestawienie ofert</h2>
+            <table id="offerTable">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="chartContainer">
+            <canvas id="offerChart"></canvas>
+        </div>
+
+        <div id="actionButtons">
+            <button id="generatePdfBtn" class="btn btn-secondary">Generuj PDF</button>
+            <button id="generateExcelBtn" class="btn btn-secondary">Generuj Excel</button>
+            <button id="generateRecommendationBtn" class="btn btn-secondary">Generuj rekomendację</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script src="offer-summary.js"></script>
+</body>
+</html>
