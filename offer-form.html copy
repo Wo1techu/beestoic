@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>beeStoic - Formularz Oferty</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="offers.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
@@ -15,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
-    <header class="animate__animated animate__fadeIn">
+    <header>
         <nav>
             <div class="logo">beeStoic</div>
             <div>
@@ -26,37 +25,18 @@
     </header>
 
     <main class="container">
-        <div class="info-card animate__animated animate__fadeInDown">
-            <h1>Zestawienie Ofert</h1>
-            <p>Wspólnota Mieszkaniowa: <span id="nazwaWspolnotyDisplay"></span></p>
-            <p>Usługa: <span id="uslugaDisplay"></span></p>
-            <p>Numer zestawienia: <span id="zestawienieNumer"></span></p>
-        </div>
+        <h1>Formularz Oferty</h1>
+        <h2>Wspólnota Mieszkaniowa: <span id="nazwaWspolnotyDisplay"></span></h2>
+        <h3>Usługa: <span id="uslugaDisplay"></span></h3>
 
-        <div class="card animate__animated animate__fadeInUp">
-            <h2>Dodaj nową ofertę</h2>
-            <form id="offerForm" class="modern-form">
-                <div class="form-group">
-                    <label for="nazwaFirmyWykonawczej">Nazwa firmy wykonawczej</label>
-                    <input type="text" id="nazwaFirmyWykonawczej" name="nazwaFirmyWykonawczej" required>
-                </div>
-                <div class="form-group">
-                    <label for="kwotaBrutto">Kwota brutto</label>
-                    <input type="number" id="kwotaBrutto" name="kwotaBrutto" required>
-                </div>
-                <div class="form-group">
-                    <label for="uwagi">Uwagi</label>
-                    <textarea id="uwagi" name="uwagi"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="ocenaMerytoryczna">Ocena merytoryczna</label>
-                    <input type="text" id="ocenaMerytoryczna" name="ocenaMerytoryczna">
-                </div>
+        <div class="card">
+            <form id="offerForm">
+                <div id="dynamicFields" class="form-grid"></div>
                 <button type="submit" class="button button-primary">Dodaj ofertę</button>
             </form>
         </div>
 
-        <div class="card animate__animated animate__fadeInUp">
+        <div class="card">
             <h2>Lista dodanych ofert</h2>
             <div class="offer-controls">
                 <input type="text" id="searchInput" placeholder="Szukaj..." class="search-input">
@@ -74,15 +54,15 @@
             </div>
         </div>
 
-        <div class="card animate__animated animate__fadeInUp">
+        <div class="card">
             <h2>Wykres ofert</h2>
             <canvas id="offerChart"></canvas>
         </div>
 
-        <div id="recommendation" class="card recommendation-card animate__animated animate__fadeInUp"></div>
+        <div id="recommendation" class="card recommendation-card"></div>
     </main>
 
-    <footer class="animate__animated animate__fadeIn">
+    <footer>
         <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
     </footer>
 

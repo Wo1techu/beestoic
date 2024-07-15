@@ -4,32 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>beeStoic - Kreator Zestawienia Ofert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="offers.css">
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">beeStoic</div>
-            <ul>
-                <li><a href="index.html">Strona główna</a></li>
-                <li><a href="offer-creator.html">Nowe zestawienie</a></li>
-            </ul>
+            <div>
+                <a href="index.html" class="button">Strona główna</a>
+                <a href="app.html" class="button">Panel główny</a>
+            </div>
         </nav>
     </header>
-    
+
     <main class="container">
         <h1>Kreator Zestawienia Ofert</h1>
-        
         <form id="offerFieldsForm">
             <div class="form-group">
-                <label for="nazwaWspolnotyInput">Nazwa Wspólnoty Mieszkaniowej:</label>
-                <input type="text" id="nazwaWspolnotyInput" required>
+                <label for="nazwaWspolnoty">Nazwa Wspólnoty Mieszkaniowej:</label>
+                <input type="text" id="nazwaWspolnoty" name="nazwaWspolnoty" required>
             </div>
+            <div class="form-group">
+                <label for="usluga">Usługa:</label>
+                <input type="text" id="usluga" name="usluga" required>
+            </div>
+
             <h2>Wybierz pola do uwzględnienia w zestawieniu:</h2>
-            <div id="fieldCheckboxes">
-                <!-- Checkboxy będą generowane dynamicznie przez JavaScript -->
+            <div id="fieldCheckboxes" class="checkbox-grid">
+                <!-- Checkboxy będą dodawane dynamicznie przez JavaScript -->
             </div>
-            <button type="submit" id="nextStepBtn" class="btn">Przejdź dalej</button>
+
+            <div class="form-group">
+                <label for="newField">Dodaj nowe pole:</label>
+                <input type="text" id="newField" name="newField" placeholder="Nazwa nowego pola">
+                <button type="button" id="addNewField" class="button">Dodaj pole</button>
+            </div>
+
+            <button type="submit" class="button">Przejdź dalej</button>
         </form>
     </main>
 
@@ -37,6 +50,6 @@
         <p>&copy; 2024 beeStoic. Wszelkie prawa zastrzeżone.</p>
     </footer>
 
-    <script src="offer-creator.js"></script>
+    <script src="offers.js"></script>
 </body>
 </html>

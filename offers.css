@@ -1,61 +1,153 @@
-/* Styles for offers module */
-
-.hidden {
-    display: none;
+:root {
+    --primary-color: #1976D2;
+    --secondary-color: #FFC107;
+    --background-color: #F5F5F5;
+    --text-color: #333333;
+    --card-background: #FFFFFF;
+    --input-border: #BDBDBD;
+    --input-focus: #2196F3;
 }
 
-.choice-button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 16px;
-    cursor: pointer;
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
-.form-group {
-    margin-bottom: 15px;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.form-group label {
+.card {
+    background-color: var(--card-background);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.info-card {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.modern-form .form-group {
+    margin-bottom: 20px;
+}
+
+.modern-form label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.modern-form input[type="text"],
+.modern-form input[type="number"],
+.modern-form textarea,
+.modern-form select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
+    padding: 10px;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.modern-form input[type="text"]:focus,
+.modern-form input[type="number"]:focus,
+.modern-form textarea:focus,
+.modern-form select:focus {
+    border-color: var(--input-focus);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+    background-color: #1565C0;
+    transform: translateY(-2px);
+}
+
+.search-input, .sort-select {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+}
+
+.table-responsive {
+    overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: var(--primary-color);
+    color: white;
 }
 
-button {
-    padding: 10px 15px;
-    margin: 5px;
-    cursor: pointer;
+.recommendation-card {
+    background-color: #E3F2FD;
+    border-left: 5px solid var(--primary-color);
 }
 
-#offerForm {
-    max-width: 500px;
-    margin: 0 auto;
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-#offerForm textarea {
-    height: 100px;
+/* Animacje */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animate__fadeIn {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate__fadeInUp {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
